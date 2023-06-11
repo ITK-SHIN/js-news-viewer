@@ -1,8 +1,7 @@
 // do something!
-
 const root = document.querySelector('#root');
 
-const nav = () => {
+const Nav = () => {
         root.innerHTML = `
             <nav class="category-list">
         <ul>
@@ -19,4 +18,4 @@ const nav = () => {
 }
 
 
-export default nav
+export default Nav

@@ -1,8 +1,7 @@
 // do something!
-
 const root = document.querySelector('#root');
 
-const newsList = () => {
+const NewsList = () => {
         const newsListCon = document.createElement('div');
         newsListCon.classList.add('news-list-container')
         
@@ -39,4 +38,4 @@ const newsList = () => {
 }
 
 
-export default newsList
+export default NewsList

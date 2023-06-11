@@ -1,9 +1,8 @@
 // do something!
-import nav from './components/Nav.js';
-import newsList from './components/NewsList.js';
+import { Nav, NewsList } from './components/index.js';
 
 
 window.addEventListener('DOMContentLoaded', () => {
-        nav();
-        newsList();
-})
+  Nav();
+  NewsList();
+});
