@@ -1,41 +1,119 @@
-// do something!
-const root = document.querySelector('#root');
-
-const NewsList = () => {
-        const newsListCon = document.createElement('div');
-        newsListCon.classList.add('news-list-container')
-        
-        newsListCon.innerHTML = `
-         <article class="news-list">
-          <section class="news-item">
-            <div class="thumbnail">
-              <a href="https://www.ajunews.com/view/20220220180410403" target="_blank" rel="noopener noreferrer">
-                <img
-                  src="https://image.ajunews.com/content/image/2022/02/20/20220220180523846963.jpg"
-                  alt="thumbnail" />
-              </a>
-            </div>
-            <div class="contents">
-              <h2>
-                <a href="https://www.ajunews.com/view/20220220180410403" target="_blank" rel="noopener noreferrer">
-                  ​[뉴욕증시 주간전망] 러시아-우크라이나 긴장 속 변동성 지속 - 아주경제
-                </a>
-              </h2>
-              <p>
-                이번 주(21일~25일·현지시간) 뉴욕 증시는 러시아와 우크라이나 간 지정학적 긴장과 우크라이나 간 미국
-                연방준비제도(Fed·연준)의 긴축 우려에 계속해서...
-              </p>
-            </div>
-          </section>
-        </article>
-
-        <div class="scroll-observer">
-          <img src="img/ball-triangle.svg" alt="Loading..." />
-        </div>
-        `;
-
-        root.appendChild(newsListCon)
-}
 
 
-export default NewsList
+const NewsList = async (data) => {
+  const newsListContainer = document.createElement('div');
+  newsListContainer.className = 'news-list-container';
+
+  const newsListArticle = document.createElement('article');
+  newsListArticle.className = 'news-list';
+  newsListArticle.dataset.category = data.category;
+  newsListContainer.appendChild(newsListArticle);
+
+  const newsList = await getNewsList(data);
+  newsList.forEach((item) => {
+    newsListArticle.appendChild(item);
+  });
+
+  const scrollObserverElement = observerElement();
+
+  newsListContainer.appendChild(scrollObserverElement);
+
+  scrollObserver(newsListArticle, scrollObserverElement);
+
+  return newsListContainer;
+};
+
+const getNewsList = async (page = 1, category) => {
+  const newsArr = [];
+  const apiKey = 'd07c46a4af5548649977196532728ed8';
+  const url = `https://newsapi.org/v2/top-headlines?country=kr&category=${
+    category === 'all' ? '' : category
+  }&page=${page}&pageSize=8&apiKey=${apiKey}`;
+
+  try {
+    const response = await axios.get(url);
+    const articles = response.data.articles;
+
+    articles.forEach((data) => {
+      if (data.urlToImage === null) {
+        data.urlToImage = '../img/noimg.gif';
+      }
+
+      if (data.description === null) {
+        data.description = '내용없음';
+      }
+
+      const newsItem = document.createElement('section');
+      newsItem.className = 'news-item';
+      newsItem.insertAdjacentHTML(
+        'beforeend',
+        `
+                <div class="thumbnail">
+                    <a href=${data.url} target="_blank" 
+                    rel="noopener noreferrer">
+                        <img
+                        src=${data.urlToImage}
+                        alt="thumbnail" />
+                    </a>
+                </div>
+                <div class="contents">
+                    <h2>
+                        <a href=${data.url} target="_blank" 
+                        rel="noopener noreferrer">
+                        ${data.title}
+                        </a>
+                    </h2>
+                    <p>
+                    ${data.description}
+                    </p>
+                </div>
+            `,
+      );
+      newsArr.push(newsItem);
+    });
+    return newsArr;
+  } catch (error) {
+    // console.log(error);
+  }
+};
+
+const observerElement = () => {
+  const observerElement = document.createElement('div');
+  observerElement.className = 'scroll-observer';
+  observerElement.dataset.page = '1';
+
+  const observerImg = document.createElement('img');
+  observerImg.src = './img/ball-triangle.svg';
+  observerImg.alt = 'Loading...';
+
+  observerElement.appendChild(observerImg);
+
+  return observerElement;
+};
+
+const scrollObserver = (newsListArticle, scrollObserverElement) => {
+  const callback = async (entries) => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) {
+        const nextPage = parseInt(entry.target.dataset['page']);
+        const category = newsListArticle.dataset.category;
+
+        const newsList = await getNewsList(nextPage, category);
+        entry.target.dataset['page'] = nextPage + 1;
+
+        if (newsList.length > 0) {
+          newsList.forEach((data) => {
+            newsListArticle.appendChild(data);
+          });
+          continue;
+        }
+        observer.unobserve(entry.target);
+        entry.target.remove();
+      }
+    }
+  };
+  const observer = new IntersectionObserver(callback, { threshold: 1.0 });
+  observer.observe(scrollObserverElement);
+};
+
+export default NewsList;

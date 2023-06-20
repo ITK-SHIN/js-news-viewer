@@ -1,8 +1,8 @@
 import Nav from './Nav.js';
 import NewsList from './NewsList.js';
 
-    Nav();
-    NewsList();
+/*     Nav();
+    NewsList(); */
 
 
 export { Nav, NewsList };
