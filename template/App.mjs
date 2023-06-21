@@ -1,7 +1,5 @@
 // do something!
-
 import { Nav, NewsList } from './components/index.js';
-
 
 window.onload = async function () {
   const rootElement = document.getElementById('root');

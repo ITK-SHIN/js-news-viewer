@@ -1,5 +1,6 @@
 export default class NewsList {
   constructor(data) {
+/*     console.log(data) */
     this.data = data;
     this.newsListCon = document.createElement('div');
     this.newsListCon.className = 'news-list-container';
@@ -29,25 +30,26 @@ export default class NewsList {
       category === 'all' ? '' : category
     }&page=${page}&pageSize=${pageSize}&apiKey=${NEWS_API_KEY}`;
 
-    try {
-      const response = await axios.get(url);
-      const articles = response.data.articles;
+    const fetchNews = async (url) => {
+      try {
+        const response = await axios.get(url);
+        const articles = response.data.articles;
 
-      articles.forEach((data) => {
-        if (data.urlToImage === null) {
-          data.urlToImage =
-            'data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==';
-        }
+        articles.forEach((data) => {
+          if (data.urlToImage === null) {
+            data.urlToImage =
+              'data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==';
+          }
 
-        if (data.description === null) {
-          data.description = '';
-        }
+          if (data.description === null) {
+            data.description = '';
+          }
 
-        const newsItem = document.createElement('section');
-        newsItem.className = 'news-item';
-        newsItem.insertAdjacentHTML(
-          'beforeend',
-          `
+          const newsItem = document.createElement('section');
+          newsItem.className = 'news-item';
+          newsItem.insertAdjacentHTML(
+            'beforeend',
+            `
                   <div class="thumbnail">
                       <a href=${data.url} target="_blank" 
                       rel="noopener noreferrer">
@@ -68,65 +70,24 @@ export default class NewsList {
                       </p>
                   </div>
               `,
-        );
-        newsArr.push(newsItem);
-      });
-      return newsArr;
-    } catch (error) {
-      if (error.response && error.response.status === 429) {
-        NEWS_API_KEY = '9d8be12d479a435ab2ec5ac3cfc249b5';
-        url = `https://newsapi.org/v2/top-headlines?country=kr&category=${
-          category === 'all' ? '' : category
-        }&page=${page}&pageSize=${pageSize}&apiKey=${NEWS_API_KEY}`;
-        try {
-          const response = await axios.get(url);
-          const articles = response.data.articles;
-
-          articles.forEach((data) => {
-            if (data.urlToImage === null) {
-              data.urlToImage =
-                'data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==';
-            }
-
-            if (data.description === null) {
-              data.description = '';
-            }
-
-            const newsItem = document.createElement('section');
-            newsItem.className = 'news-item';
-            newsItem.insertAdjacentHTML(
-              'beforeend',
-              `
-                      <div class="thumbnail">
-                          <a href=${data.url} target="_blank" 
-                          rel="noopener noreferrer">
-                              <img
-                              src=${data.urlToImage}
-                              alt="thumbnail" />
-                          </a>
-                      </div>
-                      <div class="contents">
-                          <h2>
-                              <a href=${data.url} target="_blank" 
-                              rel="noopener noreferrer">
-                              ${data.title}
-                              </a>
-                          </h2>
-                          <p>
-                          ${data.description}
-                          </p>
-                      </div>
-                  `,
-            );
-            newsArr.push(newsItem);
-          });
-          return newsArr;
-        } catch (error) {
-          return [];
+          );
+          newsArr.push(newsItem);
+        });
+        return newsArr;
+      } catch (error) {
+        if (error.response && error.response.status === 429) {
+          NEWS_API_KEY = '9d8be12d479a435ab2ec5ac3cfc249b5';
+          url = `https://newsapi.org/v2/top-headlines?country=kr&category=${
+            category === 'all' ? '' : category
+          }&page=${page}&pageSize=${pageSize}&apiKey=${NEWS_API_KEY}`;
+          return await fetchNews(url);
         }
+
+        return [];
       }
-      return [];
-    }
+    };
+
+    return await fetchNews(url);
   }
 
   observerElement() {
@@ -139,7 +100,7 @@ export default class NewsList {
     observerImg.alt = 'Loading...';
 
     observerElement.appendChild(observerImg);
-
+    
     return observerElement;
   }
 
@@ -164,8 +125,9 @@ export default class NewsList {
         }
       }
     };
-    const io = new IntersectionObserver(callback, { threshold: 0.8 });
-    io.observe(scrollObserverElement);
+
+    const io = new IntersectionObserver(callback, { threshold: 0.8 ,rootMargin: '-20px'});
+    io.observe(this.scrollObserverElement);
   }
 
   get element() {
