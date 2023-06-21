@@ -13,22 +13,25 @@ window.onload = async function () {
     {
       set: async function (target, prop, value) {
         Reflect.set(target, prop, value);
-        const newsListElement = await NewsList(proxyData);
+        const newsListElement = new NewsList(proxyData);
+        await newsList.updateNewsList();
         const container = rootElement.querySelector('.news-list-container');
 
         if (container === null) {
-          rootElement.appendChild(newsListElement);
+          rootElement.appendChild(newsListElement.element);
         } else {
-          container.replaceWith(newsListElement);
+          container.replaceWith(newsListElement.element);
           return;
         }
       },
     },
   );
 
-  const navElement = Nav(proxyData);
-  rootElement.appendChild(navElement);
+  const navElement = new Nav(proxyData);
+  rootElement.appendChild(navElement.element);
 
-  const newsListElement = await NewsList(proxyData);
-  rootElement.appendChild(newsListElement);
+  const newsList = new NewsList(proxyData);
+  await newsList.updateNewsList();
+  rootElement.appendChild(newsList.element);
+  
 };
