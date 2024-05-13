@@ -1,19 +1,32 @@
 export default class NewsList {
   constructor(data) {
-/*     console.log(data) */
     this.data = data;
+    this.createNewsListAndScrollObserver();
+  }
+  
+  createNewsListAndScrollObserver() {
+    const newsListCon = this.createNewsListCon();
+    const newsListArticle =this.createNewsListArticle();
+    newsListCon.appendChild(newsListArticle);
+    
+    this.scrollObserverElement = this.observerElement();
+    this.newsListCon.appendChild(this.scrollObserverElement);
+    this.scrollObserver(this.newsListArticle, this.scrollObserverElement);
+  }
+
+  createNewsListCon() {
     this.newsListCon = document.createElement('div');
     this.newsListCon.className = 'news-list-container';
 
-    this.newsListArticle = document.createElement('article');
-    this.newsListArticle.className = 'news-list';
-    this.newsListArticle.dataset.category = data.category;
-    this.newsListCon.appendChild(this.newsListArticle);
+    return this.newsListCon
+  }
 
-    this.scrollObserverElement = this.observerElement();
-    this.newsListCon.appendChild(this.scrollObserverElement);
-
-    this.scrollObserver(this.newsListArticle, this.scrollObserverElement);
+  createNewsListArticle() {
+     this.newsListArticle = document.createElement('article');
+     this.newsListArticle.className = 'news-list';
+     this.newsListArticle.dataset.category = this.data.category;
+    
+    return this.newsListArticle
   }
 
   async updateNewsList() {

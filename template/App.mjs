@@ -14,7 +14,7 @@ window.onload = async function () {
         const newsListElement = new NewsList(proxyData);
         await newsList.updateNewsList();
         const container = rootElement.querySelector('.news-list-container');
-
+ 
         if (container === null) {
           rootElement.appendChild(newsListElement.element);
         } else {
