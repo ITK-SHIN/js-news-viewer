@@ -1,12 +1,16 @@
 export default class Nav {
   constructor(data) {
     this.data = data;
+    this.createNavElement();
+    this.selectCategory();
+  }
+
+   createNavElement ()  {
     this.navElement = document.createElement('nav');
     this.navElement.className = 'category-list';
-
     this.navElement.insertAdjacentHTML(
-      'beforeend',
-      `
+        'beforeend',
+        `
         <ul>
            <li id="all" class="category-item active">전체보기</li>
            <li id="business" class="category-item">비즈니스</li>
@@ -17,21 +21,26 @@ export default class Nav {
            <li id="technology" class="category-item">기술</li>
         </ul>  
      `,
-    );
+      );
 
-    const categoryItem = this.navElement.querySelectorAll('.category-item');
+    return this.navElement;
+   }
+  
+  selectCategory() {
+        const categoryItem = this.navElement.querySelectorAll('.category-item');
 
-    categoryItem.forEach((item) => {
-      item.addEventListener('click', (event) => {
         categoryItem.forEach((item) => {
-          item.classList.remove('active');
-        });
-        event.target.classList.add('active');
-        this.data.category = event.target.id;
-      });
-    });
-  }
+          item.addEventListener('click', (event) => {
+            categoryItem.forEach((item) => {
+              item.classList.remove('active');
+            });
 
+            event.target.classList.add('active');
+            this.data.category = event.target.id;
+          });
+        });
+  }
+  
   get element() {
     return this.navElement;
   }

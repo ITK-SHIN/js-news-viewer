@@ -25,10 +25,10 @@ export default class NewsList {
 
   async getNewsList(page = 1, category, pageSize = 5) {
     const newsArr = [];
-    let NEWS_API_KEY = '4b5fcfae84d64b68ab6bd73c347c8004';
+    let NEWS_API__KEY = '4b5fcfae84d64b68ab6bd73c347c8004';
     let url = `https://newsapi.org/v2/top-headlines?country=kr&category=${
       category === 'all' ? '' : category
-    }&page=${page}&pageSize=${pageSize}&apiKey=${NEWS_API_KEY}`;
+    }&page=${page}&pageSize=${pageSize}&apiKey=${NEWS_API__KEY}`;
 
     const fetchNews = async (url) => {
       try {
@@ -76,10 +76,10 @@ export default class NewsList {
         return newsArr;
       } catch (error) {
         if (error.response && error.response.status === 429) {
-          NEWS_API_KEY = '9d8be12d479a435ab2ec5ac3cfc249b5';
+          NEWS_API__KEY = '9d8be12d479a435ab2ec5ac3cfc249b5';
           url = `https://newsapi.org/v2/top-headlines?country=kr&category=${
             category === 'all' ? '' : category
-          }&page=${page}&pageSize=${pageSize}&apiKey=${NEWS_API_KEY}`;
+          }&page=${page}&pageSize=${pageSize}&apiKey=${NEWS_API__KEY}`;
           return await fetchNews(url);
         }
 
