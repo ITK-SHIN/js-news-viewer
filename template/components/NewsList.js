@@ -1,32 +1,35 @@
 export default class NewsList {
   constructor(data) {
     this.data = data;
-    this.createNewsListAndScrollObserver();
+    this.createNewsList();
+    this.createScrollObserverElement();
   }
-  
-  createNewsListAndScrollObserver() {
+
+  createNewsList() {
     const newsListCon = this.createNewsListCon();
-    const newsListArticle =this.createNewsListArticle();
+    const newsListArticle = this.createNewsListArticle();
     newsListCon.appendChild(newsListArticle);
-    
-    this.scrollObserverElement = this.observerElement();
-    this.newsListCon.appendChild(this.scrollObserverElement);
-    this.scrollObserver(this.newsListArticle, this.scrollObserverElement);
   }
 
   createNewsListCon() {
     this.newsListCon = document.createElement('div');
     this.newsListCon.className = 'news-list-container';
 
-    return this.newsListCon
+    return this.newsListCon;
   }
 
   createNewsListArticle() {
-     this.newsListArticle = document.createElement('article');
-     this.newsListArticle.className = 'news-list';
-     this.newsListArticle.dataset.category = this.data.category;
-    
-    return this.newsListArticle
+    this.newsListArticle = document.createElement('article');
+    this.newsListArticle.className = 'news-list';
+    this.newsListArticle.dataset.category = this.data.category;
+
+    return this.newsListArticle;
+  }
+
+  createScrollObserverElement() {
+    this.scrollObserverElement = this.observerElement();
+    this.newsListCon.appendChild(this.scrollObserverElement);
+    this.scrollObserver(this.newsListArticle, this.scrollObserverElement);
   }
 
   async updateNewsList() {
@@ -82,10 +85,11 @@ export default class NewsList {
                       ${data.description}
                       </p>
                   </div>
-              `,
+              `
           );
           newsArr.push(newsItem);
         });
+
         return newsArr;
       } catch (error) {
         if (error.response && error.response.status === 429) {
@@ -113,7 +117,7 @@ export default class NewsList {
     observerImg.alt = 'Loading...';
 
     observerElement.appendChild(observerImg);
-    
+
     return observerElement;
   }
 
@@ -139,7 +143,10 @@ export default class NewsList {
       }
     };
 
-    const io = new IntersectionObserver(callback, { threshold: 0.8 ,rootMargin: '-20px'});
+    const io = new IntersectionObserver(callback, {
+      threshold: 0.8,
+      rootMargin: '-20px',
+    });
     io.observe(this.scrollObserverElement);
   }
 

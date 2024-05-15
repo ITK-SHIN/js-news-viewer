@@ -29,12 +29,13 @@ export default class Nav {
   selectCategory() {
         const categoryItem = this.navElement.querySelectorAll('.category-item');
 
-        categoryItem.forEach((item) => {
+        [...categoryItem].forEach((item) => {
           item.addEventListener('click', (event) => {
             categoryItem.forEach((item) => {
               item.classList.remove('active');
             });
 
+            console.log(event.target)
             event.target.classList.add('active');
             this.data.category = event.target.id;
           });

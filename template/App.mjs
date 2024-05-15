@@ -19,17 +19,17 @@ window.onload = async function () {
           rootElement.appendChild(newsListElement.element);
         } else {
           container.replaceWith(newsListElement.element);
-          return;
         }
       },
     },
   );
 
   const navElement = new Nav(proxyData);
-  rootElement.appendChild(navElement.element);
-
   const newsList = new NewsList(proxyData);
-  await newsList.updateNewsList();
+  rootElement.appendChild(navElement.element);
   rootElement.appendChild(newsList.element);
+
+  await newsList.updateNewsList();
+
   
 };
